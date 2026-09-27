@@ -37,7 +37,7 @@ class Account:
             'action' : 'buy'
         }
 
-        self.history[asset][datetime.now()] = hist
+        self.history[asset][datetime.now().strftime("%d/%m/%Y %H:%M:%S")] = hist
 
         self.assets[asset]['amount'] += amount
         self.assets[asset]['total_cost'] += cost
@@ -60,7 +60,7 @@ class Account:
             'action' : 'sell'
         }
 
-        self.history[asset][datetime.now()] = hist
+        self.history[asset][datetime.now().strftime("%d/%m/%Y %H:%M:%S")] = hist
 
         self.assets[asset]['amount'] -= amount
         self.assets[asset]['total_cost'] -= cost
