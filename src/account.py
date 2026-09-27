@@ -23,6 +23,24 @@ class Account:
         if cost > self.fiat: #if you don't have enought you can't buy
             print(f'You do not have enough fiat to buy {asset}')
 
+        if asset not in self.assets:
+            self.assets[asset] = {
+                'amount': 0,
+                'total_cost' : 0
+            }
+        if asset not in self.history:
+            self.history[asset] = {}
+
+        hist = {
+            'amount': amount,
+            'price': price,
+            'action' : 'buy'
+        }
+
+        self.history[asset][datetime.now()] = hist
+
+        self.assets[asset]['amount'] += amount
+        self.assets[asset]['total_cost'] += cost
 
 
 
@@ -34,7 +52,7 @@ class Account:
         print(f'Toal fiat: {self.fiat}')
         print(f'Assets: {self.assets}')
 
-    def history(self):
+    def hist(self):
         print(self.history)
 
 
