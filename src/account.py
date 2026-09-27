@@ -46,7 +46,25 @@ class Account:
 
     def sell(self, asset, amount, price):
         #this will sell an asset if is in assets
-        pass
+        if asset not in self.assets:
+            print(f'You do not have this asset')
+
+        if amount < self.assets[asset]['amount']:
+            print(f'You do not have enough asset, you have {self.assets[asset]['amount']} {asset}')
+
+        cost = amount * price
+
+        hist = {
+            'amount': amount,
+            'price': price,
+            'action' : 'sell'
+        }
+
+        self.history[asset][datetime.now()] = hist
+
+        self.assets[asset]['amount'] -= amount
+        self.assets[asset]['total_cost'] -= cost
+        self.fiat += cost
 
     def state(self):
         print(f'Toal fiat: {self.fiat}')
