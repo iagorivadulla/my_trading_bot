@@ -4,6 +4,24 @@ from datetime import datetime
 In this file will build an enviroment for trading
 
 '''
+def calculate_avg(asset, history):
+    total_asset = 0
+    total_cost = 0
+
+    for i in history[asset].values():
+        if i['action'] == 'buy':
+            total_asset += i['amount']
+            total_cost += i['amount'] * i['price']
+
+        elif i['action'] == 'sell':
+            avg_price = total_cost / total_asset
+            total_cost -= i['amount'] * avg_price
+            total_asset -= i['amount']
+
+    if total_asset == 0:
+        return 0
+
+    return total_cost/total_asset
 
 class Account:
     def __init__(self, fiat: float):
@@ -22,11 +40,13 @@ class Account:
         cost = amount * price
         if cost > self.fiat: #if you don't have enought you can't buy
             print(f'You do not have enough fiat to buy {asset}')
+            return
 
         if asset not in self.assets:
             self.assets[asset] = {
                 'amount': 0,
-                'total_cost' : 0
+                'total_cost' : 0,
+                'total_gain' : 0
             }
         if asset not in self.history:
             self.history[asset] = {}
@@ -41,6 +61,8 @@ class Account:
 
         self.assets[asset]['amount'] += amount
         self.assets[asset]['total_cost'] += cost
+        self.assets[asset]['avg_price'] = calculate_avg(asset, self.history)
+        self.fiat -= cost
 
 
 
@@ -48,11 +70,13 @@ class Account:
         #this will sell an asset if is in assets
         if asset not in self.assets:
             print(f'You do not have this asset')
+            return
 
-        if amount < self.assets[asset]['amount']:
+        if amount > self.assets[asset]['amount']:
             print(f'You do not have enough asset, you have {self.assets[asset]['amount']} {asset}')
+            return
 
-        cost = amount * price
+        revenue = amount * price
 
         hist = {
             'amount': amount,
@@ -62,16 +86,21 @@ class Account:
 
         self.history[asset][datetime.now().strftime("%d/%m/%Y %H:%M:%S")] = hist
 
+        avg_price = self.assets[asset]['total_cost'] / self.assets[asset]['amount']
+        cost_of_sold = amount * avg_price
+
         self.assets[asset]['amount'] -= amount
-        self.assets[asset]['total_cost'] -= cost
-        self.fiat += cost
+        self.assets[asset]['total_gain'] += revenue
+        self.assets[asset]['total_cost'] -= cost_of_sold
+        self.assets[asset]['avg_price'] = calculate_avg(asset, self.history)
+        self.fiat += revenue
 
     def state(self):
-        print(f'Toal fiat: {self.fiat}')
+        print(f'Total fiat: {self.fiat}')
         print(f'Assets: {self.assets}')
 
     def hist(self):
-        print(self.history)
+        return self.history
 
 
 
