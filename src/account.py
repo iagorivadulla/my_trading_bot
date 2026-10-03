@@ -4,30 +4,33 @@ from datetime import datetime
 In this file will build an enviroment for trading
 
 '''
-def calculate_avg(asset, history):
-    total_asset = 0
-    total_cost = 0
 
-    for i in history[asset].values():
-        if i['action'] == 'buy':
-            total_asset += i['amount']
-            total_cost += i['amount'] * i['price']
-
-        elif i['action'] == 'sell':
-            avg_price = total_cost / total_asset
-            total_cost -= i['amount'] * avg_price
-            total_asset -= i['amount']
-
-    if total_asset == 0:
-        return 0
-
-    return total_cost/total_asset
 
 class Account:
     def __init__(self, fiat: float):
         self.fiat = fiat #the first ammount
         self.assets = {} #this initialites a boid dict to see the actual state
         self.history = {} #history of transactions
+
+    def __calculate_avg(self, asset):
+        #this is a private method to calculate avg prices
+        total_asset = 0
+        total_cost = 0
+
+        for i in self.history[asset].values():
+            if i['action'] == 'buy':
+                total_asset += i['amount']
+                total_cost += i['amount'] * i['price']
+
+            elif i['action'] == 'sell':
+                avg_price = total_cost / total_asset
+                total_cost -= i['amount'] * avg_price
+                total_asset -= i['amount']
+
+        if total_asset == 0:
+            return 0
+
+        return total_cost / total_asset
 
     def add_fiat(self, added):
         #this will add more fiat to accouunt
@@ -61,7 +64,7 @@ class Account:
 
         self.assets[asset]['amount'] += amount
         self.assets[asset]['total_cost'] += cost
-        self.assets[asset]['avg_price'] = calculate_avg(asset, self.history)
+        self.assets[asset]['avg_price'] = self.__calculate_avg(asset)
         self.fiat -= cost
 
 
@@ -92,7 +95,7 @@ class Account:
         self.assets[asset]['amount'] -= amount
         self.assets[asset]['total_gain'] += revenue
         self.assets[asset]['total_cost'] -= cost_of_sold
-        self.assets[asset]['avg_price'] = calculate_avg(asset, self.history)
+        self.assets[asset]['avg_price'] = self.__calculate_avg(asset)
         self.fiat += revenue
 
     def state(self):
