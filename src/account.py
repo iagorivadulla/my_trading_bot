@@ -38,7 +38,7 @@ class Account:
         self.history['fiat'] = [datetime.now(), added]
         print(f'{added} added to account. Now you have {self.fiat}')
 
-    def buy(self, asset, amount, price):
+    def buy(self, asset, amount, price, date = None):
         #this will buy an asset added it to assets
         cost = amount * price
         if cost > self.fiat: #if you don't have enought you can't buy
@@ -60,7 +60,11 @@ class Account:
             'action' : 'buy'
         }
 
-        self.history[asset][datetime.now().strftime("%d/%m/%Y %H:%M:%S")] = hist
+        if date is None:
+            date = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+
+
+        self.history[asset][date] = hist
 
         self.assets[asset]['amount'] += amount
         self.assets[asset]['total_cost'] += cost
@@ -69,7 +73,7 @@ class Account:
 
 
 
-    def sell(self, asset, amount, price):
+    def sell(self, asset, amount, price, date = None):
         #this will sell an asset if is in assets
         if asset not in self.assets:
             print(f'You do not have this asset')
@@ -87,7 +91,10 @@ class Account:
             'action' : 'sell'
         }
 
-        self.history[asset][datetime.now().strftime("%d/%m/%Y %H:%M:%S")] = hist
+        if date is None:
+            date = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+
+        self.history[asset][date] = hist
 
         avg_price = self.assets[asset]['total_cost'] / self.assets[asset]['amount']
         cost_of_sold = amount * avg_price
