@@ -23,3 +23,20 @@ class Market:
         self.step += 1
         if self.step == len(self.market):
             self.end = True
+
+    def reset(self):
+        self.step = 0
+        self.end = False
+
+
+
+def read_market(market_data) -> dict:
+
+    tickers = market_data['Close'].index
+
+    market = {}
+
+    for ticker in tickers:
+        market[ticker] = market_data['Close'][ticker].item()
+
+    return market
