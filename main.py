@@ -4,7 +4,7 @@ import random
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
-DATA_DIR = BASE_DIR / 'data' / 'market_data.parquet'
+DATA_DIR = BASE_DIR / 'data' / 'market_data_KO.parquet'
 
 market = Market(DATA_DIR)
 tickers = list(market.market['Close'].columns)
@@ -33,22 +33,28 @@ def trading_monkey(monkey, market):
 
         prices = read_market(prices)
         action, ticker = random_choice()
-        money = random_money(monkey) / prices[ticker]
+        money = random_money(monkey) / prices[ticker][0]
         amount = random_amount(monkey, ticker)
 
+        for ticker in prices:
+            if prices[ticker][1] is not None:
+                for asset in monkey.assets:
+                    if ticker == asset:
+                        monkey.add_fiat(prices[ticker][1] * monkey.assets[asset]['amount'])
+                        print(f'{ticker} has paid {prices[ticker][1] * monkey.assets[asset]['amount']} USD.')
+
+
         if action == 'buy':
-            monkey.buy(asset=ticker, amount = money  ,price=prices[ticker], date=date)
+            monkey.buy(asset=ticker, amount = money  ,price=prices[ticker][0], date=date)
 
         elif action == 'sell':
-            monkey.sell(asset=ticker, amount=amount, price=prices[ticker], date=date)
+            monkey.sell(asset=ticker, amount=amount, price=prices[ticker][0], date=date)
 
         elif action == 'hold':
             pass
 
         market.move()
 
-    print(monkey.state)
-    print(monkey.hist)
 
 if __name__ == '__main__':
     monkey = Account(5000)
