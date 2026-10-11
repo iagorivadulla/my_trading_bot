@@ -37,6 +37,9 @@ def read_market(market_data) -> dict:
     market = {}
 
     for ticker in tickers:
-        market[ticker] = market_data['Close'][ticker].item()
+        if market_data['Dividends'][ticker].item() > 0:
+            market[ticker] = (market_data['Close'][ticker].item(), market_data['Dividends'][ticker].item())
+        else:
+            market[ticker] = (market_data['Close'][ticker], None)
 
     return market
