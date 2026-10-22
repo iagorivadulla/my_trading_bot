@@ -10,11 +10,16 @@ def fifty_bucks_every_month(monkey, market):
 
         date, prices = market.now()
 
+        ticker = prices.index[0][1]
+        price_today = prices.iloc[0]
+
+        if prices['Dividends'][0]:
+            monkey.add_fiat(prices['Dividends'][0] * monkey.assets[ticker]['amount'])
+            print(f'{ticker} has paid {prices['Dividends'][0] * monkey.assets[ticker]['amount']} USD.')
+
+
         if last_month != date.month:
             monkey.add_fiat(50) #every month gets 50 bucks
-
-            ticker = prices.index[0][1]
-            price_today = prices.iloc[0]
 
             amount = 50/price_today
 
