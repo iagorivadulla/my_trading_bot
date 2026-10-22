@@ -36,12 +36,12 @@ def trading_monkey(monkey, market):
         money = random_money(monkey) / prices[ticker][0]
         amount = random_amount(monkey, ticker)
 
-        for ticker in prices:
-            if prices[ticker][1] is not None:
+        for t in prices:
+            if prices[t][1] is not None:
                 for asset in monkey.assets:
-                    if ticker == asset:
-                        monkey.add_fiat(prices[ticker][1] * monkey.assets[asset]['amount'])
-                        print(f'{ticker} has paid {prices[ticker][1] * monkey.assets[asset]['amount']} USD.')
+                    if t == asset:
+                        monkey.add_fiat(prices[t][1] * monkey.assets[asset]['amount'])
+                        print(f'{t} has paid {prices[t][1] * monkey.assets[asset]['amount']} USD.')
 
 
         if action == 'buy':
