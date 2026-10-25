@@ -3,15 +3,15 @@ from src.markets import Market, read_market
 import random
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent
-DATA_DIR = BASE_DIR / 'data' / 'market_data_KO.parquet'
+#BASE_DIR = Path(__file__).resolve().parent
+#DATA_DIR = BASE_DIR / 'data' / 'market_data_KO.parquet'
 
-market = Market(DATA_DIR)
-tickers = list(market.market['Close'].columns)
+#market = Market(DATA_DIR)
+#tickers = list(market.market['Close'].columns)
 
-def random_choice():
+def random_choice(market):
     actions = ['buy', 'sell', 'hold']
-    global tickers
+    tickers = list(market.market['Close'].columns)
     return random.choice(actions), random.choice(tickers)
 
 def random_money(monkey):
@@ -32,7 +32,7 @@ def trading_monkey(monkey, market):
         date, prices = market.now()
 
         prices = read_market(prices)
-        action, ticker = random_choice()
+        action, ticker = random_choice(market)
         money = random_money(monkey) / prices[ticker][0]
         amount = random_amount(monkey, ticker)
 
