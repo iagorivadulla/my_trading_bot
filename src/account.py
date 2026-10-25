@@ -1,4 +1,5 @@
 from datetime import datetime
+from tabnanny import verbose
 
 '''
 In this file will build an enviroment for trading
@@ -7,10 +8,11 @@ In this file will build an enviroment for trading
 
 
 class Account:
-    def __init__(self, fiat: float):
+    def __init__(self, fiat: float, verbose: bool = False):
         self.fiat = fiat #the first ammount
         self.assets = {} #this initialites a boid dict to see the actual state
         self.history = {} #history of transactions
+        self.verbose = verbose
 
     def __calculate_avg(self, asset):
         #this is a private method to calculate avg prices
@@ -36,13 +38,16 @@ class Account:
         #this will add more fiat to accouunt
         self.fiat += added
         self.history['fiat'] = [datetime.now(), added]
-        print(f'{added} added to account. Now you have {self.fiat}')
+
+        if self.verbose:
+            print(f'{added} added to account. Now you have {self.fiat}')
 
     def buy(self, asset, amount, price, date = None):
         #this will buy an asset added it to assets
         cost = amount * price
         if cost > self.fiat: #if you don't have enought you can't buy
-            print(f'You do not have enough fiat to buy {asset}')
+            if self.verbose:
+                print(f'You do not have enough fiat to buy {asset}')
             return
 
         if asset not in self.assets:
@@ -76,11 +81,13 @@ class Account:
     def sell(self, asset, amount, price, date = None):
         #this will sell an asset if is in assets
         if asset not in self.assets:
-            print(f'You do not have this asset')
+            if self.verbose:
+                print(f'You do not have this asset')
             return
 
         if amount > self.assets[asset]['amount']:
-            print(f'You do not have enough asset, you have {self.assets[asset]['amount']} {asset}')
+            if self.verbose:
+                print(f'You do not have enough asset, you have {self.assets[asset]['amount']} {asset}')
             return
 
         revenue = amount * price
