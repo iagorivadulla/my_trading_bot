@@ -3,11 +3,6 @@ from src.markets import Market, read_market
 import random
 from pathlib import Path
 
-#BASE_DIR = Path(__file__).resolve().parent
-#DATA_DIR = BASE_DIR / 'data' / 'market_data_KO.parquet'
-
-#market = Market(DATA_DIR)
-#tickers = list(market.market['Close'].columns)
 
 def random_choice(market):
     actions = ['buy', 'sell', 'hold']
@@ -26,7 +21,7 @@ def random_amount(monkey, ticker):
     except KeyError:
         return None
 
-def trading_monkey(monkey, market):
+def trading_monkey(monkey, market, verbose: bool = False):
 
     while not market.end:
         date, prices = market.now()
@@ -41,7 +36,8 @@ def trading_monkey(monkey, market):
                 for asset in monkey.assets:
                     if t == asset:
                         monkey.add_fiat(prices[t][1] * monkey.assets[asset]['amount'])
-                        print(f'{t} has paid {prices[t][1] * monkey.assets[asset]['amount']} USD.')
+                        if verbose:
+                            print(f'{t} has paid {prices[t][1] * monkey.assets[asset]['amount']} USD.')
 
 
         if action == 'buy':

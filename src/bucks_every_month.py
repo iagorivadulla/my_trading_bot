@@ -2,7 +2,7 @@ from src.account import Account
 from src.markets import Market, read_market
 from pathlib import Path
 
-def fifty_bucks_every_month(monkey, market, reinvest = False):
+def fifty_bucks_every_month(monkey, market, reinvest: bool = False, verbose: bool = False):
 
     last_month = None
 
@@ -15,7 +15,8 @@ def fifty_bucks_every_month(monkey, market, reinvest = False):
 
         if prices['Dividends'].iloc[0]:
             monkey.add_fiat(prices['Dividends'].iloc[0] * monkey.assets[ticker]['amount'])
-            print(f'{ticker} has paid {prices['Dividends'].iloc[0] * monkey.assets[ticker]['amount']} USD.')
+            if verbose:
+                print(f'{ticker} has paid {prices['Dividends'].iloc[0] * monkey.assets[ticker]['amount']} USD.')
 
 
         if last_month != date.month:
