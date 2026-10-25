@@ -2,7 +2,7 @@ from src.account import Account
 from src.markets import Market, read_market
 from pathlib import Path
 
-def fifty_bucks_every_month(monkey, market, reinvest: bool = False, verbose: bool = False):
+def bucks_every_month(monkey, market, invest: int, reinvest: bool = False, verbose: bool = False):
 
     last_month = None
 
@@ -20,12 +20,12 @@ def fifty_bucks_every_month(monkey, market, reinvest: bool = False, verbose: boo
 
 
         if last_month != date.month:
-            monkey.add_fiat(100) #every month gets 50 bucks
+            monkey.add_fiat(invest) #every month gets 50 bucks
 
             if reinvest:
                 amount = monkey.fiat/price_today
             else:
-                amount = 100 / price_today
+                amount = invest / price_today
 
             monkey.buy(asset=ticker, amount=amount, price=prices.iloc[0], date=date)
 
