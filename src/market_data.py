@@ -1,4 +1,6 @@
 import yfinance as yf
+import warnings
+warnings.filterwarnings('ignore')
 
 def market_data(ticker, start: str, end: str, interval: str ,auto_adjust=False):
 
